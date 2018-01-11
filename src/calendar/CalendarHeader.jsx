@@ -6,10 +6,13 @@ import MonthPanel from '../month/MonthPanel';
 import YearPanel from '../year/YearPanel';
 import DecadePanel from '../decade/DecadePanel';
 
-function goMonth(direction) {
+function goMonth(direction, triggerMonthChange = true) {
   const next = this.props.value.clone();
   next.add(direction, 'months');
   this.props.onValueChange(next);
+  if (triggerMonthChange) {
+    this.props.onMonthChange(direction);
+  }
 }
 
 function goYear(direction) {
@@ -33,6 +36,7 @@ const CalendarHeader = createReactClass({
     enablePrev: PropTypes.any,
     enableNext: PropTypes.any,
     disabledMonth: PropTypes.func,
+    onMonthChange: PropTypes.func,
   },
 
   getDefaultProps() {
@@ -44,9 +48,13 @@ const CalendarHeader = createReactClass({
     };
   },
 
+  goMonth(direction) {
+    goMonth.bind(this, direction, false)();
+  },
+
   getInitialState() {
-    this.nextMonth = goMonth.bind(this, 1);
-    this.previousMonth = goMonth.bind(this, -1);
+    this.nextMonth = goMonth.bind(this, 1, true);
+    this.previousMonth = goMonth.bind(this, -1, true);
     this.nextYear = goYear.bind(this, 1);
     this.previousYear = goYear.bind(this, -1);
     return { yearPanelReferer: null };

@@ -452,6 +452,13 @@ const RangeCalendar = createReactClass({
     return month.isSameOrBefore(value[0], 'month');
   },
 
+  monthChanged(calendarPosition, direction) {
+    setTimeout(() => {
+      this.refs.leftCalendar.refs.header.goMonth(direction);
+    }, 0);
+    this.refs.rightCalendar.refs.header.goMonth(direction);
+  },
+
   render() {
     const { props, state } = this;
     const {
@@ -549,6 +556,8 @@ const RangeCalendar = createReactClass({
               showTimePicker={showTimePicker}
               enablePrev
               enableNext={!isClosestMonths || this.isMonthYearPanelShow(mode[1])}
+              ref="leftCalendar"
+              onMonthChange={this.monthChanged.bind(this, 'right')}
             />
             <span className={`${prefixCls}-range-middle`}>~</span>
             <CalendarPart
@@ -570,6 +579,8 @@ const RangeCalendar = createReactClass({
               disabledMonth={this.disabledEndMonth}
               enablePrev={!isClosestMonths || this.isMonthYearPanelShow(mode[0])}
               enableNext
+              ref="rightCalendar"
+              onMonthChange={this.monthChanged.bind(this, 'left')}
             />
           </div>
           <div className={cls}>
